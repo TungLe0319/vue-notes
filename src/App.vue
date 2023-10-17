@@ -1,8 +1,7 @@
 <!-- eslint-disable no-unused-vars -->
 <script setup>
 import { ref, onMounted } from "vue";
-import FirstMenuRow from "./components/FirstMenuRow.vue";
-import SecondMenuRow from "./components/SecondMenuRow.vue";
+
 import SideBarMenu from "./components/SideBarMenu.vue";
 
 const fontsize = ref(24);
@@ -21,7 +20,7 @@ onMounted(() => {
 
 async function watchClipBoard() {
   const clipBoard = await navigator.clipboard.readText();
-console.log(clipBoard);
+  console.log(clipBoard);
   // Regular expressions
   const phoneRegex = /(\+\d{1,2}\s?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/g; // Matches phone numbers
   const ticketRegex = /Ticket:\s?(\w+)/g; // Matches ticket numbers (assuming a format like "Ticket: ABC123")
@@ -77,26 +76,120 @@ const text = ref("Type here...");
       </div>
     </div>
     <div class="menu-container">
-      <ul class="line-row">
-        <li class="line-item">Classified</li>
-        <li class="line-item">
-          <input type="text" v-model="userEmail" />
-        </li>
+      <div class="menu-section1">
+        <ul class="line-row">
+          <li class="line-item"><input type="text" value="Classified?" /></li>
+          <li class="line-item">
+            <input type="text" v-model="userEmail" />
+          </li>
 
-        <li class="line-item">
-          <input type="text" v-model="assetTag" />
-        </li>
+          <li class="line-item">
+            <input type="text" v-model="assetTag" />
+          </li>
 
-        <li class="line-item">
-          <input type="text" v-model="ticketNumber" />
-        </li>
-        <li class="line-item">
-          <input type="text" v-model="phoneNumber" />
-        </li>
-      </ul>
+          <li class="line-item">
+            <input type="text" v-model="ticketNumber" />
+          </li>
+          <li class="line-item">
+            <input type="text" v-model="phoneNumber" />
+          </li>
+        </ul>
 
-      <!-- <FirstMenuRow />
-      <SecondMenuRow /> -->
+        <div class="change-ticket-buttons">
+          <button>
+            <img
+              src="https://cdn-icons-png.flaticon.com/128/32/32766.png"
+              alt="button"
+              width="15"
+              height="15"
+            />
+          </button>
+          <button>
+            <img
+              src="https://cdn-icons-png.flaticon.com/128/54/54366.png"
+              alt="button"
+              width="15"
+              height="15"
+            />
+          </button>
+        </div>
+      </div>
+      <div class="menu-section1">
+        <ul class="line-row">
+          <li class="line-item"><input type="text" value="Classified?" /></li>
+          <li class="line-item">
+            <input type="text" v-model="userEmail" />
+          </li>
+
+          <li class="line-item">
+            <input type="text" v-model="assetTag" />
+          </li>
+
+          <li class="line-item">
+            <input type="text" v-model="ticketNumber" />
+          </li>
+          <li class="line-item">
+            <input type="text" v-model="phoneNumber" />
+          </li>
+        </ul>
+
+        <div class="change-ticket-buttons">
+          <button>
+            <img
+              src="https://cdn-icons-png.flaticon.com/128/32/32766.png"
+              alt="button"
+              width="15"
+              height="15"
+            />
+          </button>
+          <button>
+            <img
+              src="https://cdn-icons-png.flaticon.com/128/54/54366.png"
+              alt="button"
+              width="15"
+              height="15"
+            />
+          </button>
+        </div>
+      </div>
+      <div class="menu-section1">
+        <ul class="line-row">
+          <li class="line-item"><input type="text" value="Classified?" /></li>
+          <li class="line-item">
+            <input type="text" v-model="userEmail" />
+          </li>
+
+          <li class="line-item">
+            <input type="text" v-model="assetTag" />
+          </li>
+
+          <li class="line-item">
+            <input type="text" v-model="ticketNumber" />
+          </li>
+          <li class="line-item">
+            <input type="text" v-model="phoneNumber" />
+          </li>
+        </ul>
+
+        <div class="change-ticket-buttons">
+          <button>
+            <img
+              src="https://cdn-icons-png.flaticon.com/128/32/32766.png"
+              alt="button"
+              width="15"
+              height="15"
+            />
+          </button>
+          <button>
+            <img
+              src="https://cdn-icons-png.flaticon.com/128/54/54366.png"
+              alt="button"
+              width="15"
+              height="15"
+            />
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -126,7 +219,6 @@ input:focus {
   outline: #ff5733 4px solid;
 }
 .main-container {
-  width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -157,7 +249,7 @@ input:focus {
 }
 
 .side-bar {
-  width: 1.5%; /* Initially a smaller width */
+  width: 2%;
   background-color: #ff5733;
   display: flex;
   flex-direction: column;
@@ -165,43 +257,34 @@ input:focus {
   align-items: center;
 
   .side-bar-menu {
-    margin-left: 12px;
-    padding-left: 12px;
+    padding-left: 0px;
     height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    width: 0%;
-    opacity: 0;
+
     list-style: none;
   }
 
   .side-bar-icon {
-    width: 30px;
-    height: 30px;
+    margin: 8px 0px 8px 0px;
+    width: 16px;
+    height: 16px;
   }
 }
 
 .line-row {
   display: flex;
-  padding: 3px;
+  padding: 2.5px;
   margin-top: 2px;
   margin-bottom: 2px;
   list-style: none;
-}
-.line-item {
-  margin-left: 1px;
-  margin-right: 1px;
-  background-color: #8b5cf6;
-  cursor: pointer;
-  border: 2px solid #000;
-}
-
-.side-bar:hover {
-  width: 5%; /* Expand on hover */
-  .side-bar-menu {
-    width: 100%;
-    opacity: 1;
+  .line-item {
+    margin-left: 1px;
+    margin-right: 1px;
+    background-color: #8b5cf6;
+    cursor: pointer;
+    border: 2px solid #000;
   }
 }
 
@@ -209,15 +292,18 @@ input:focus {
   border-top: 4px black solid;
   display: flex;
   flex-direction: column;
-  height: 17vh;
 }
+//height: 17vh;
 
-.row-1,
-.row-2,
-.row-3,
-.row-4 {
+.menu-section1 {
+  width: 100%;
   display: flex;
   justify-content: space-between;
+}
+
+.change-ticket-buttons {
+  padding-top: 6.5px;
+  padding-right: 6px;
 }
 
 /* For Webkit-based browsers (Chrome, Safari) */
