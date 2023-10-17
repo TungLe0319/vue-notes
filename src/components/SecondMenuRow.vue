@@ -1,11 +1,10 @@
 <template>
   <ul class="line-row">
-    <li class="line-item">CLASSIFIED</li>
-    <button @click="open" class="line-item">{emailInput || "USER"}</button>
-    <li class="line-item">Asset#</li>
-    <li class="line-item">Machine</li>
-    <li class="line-item">Ticket#</li>
-    <li class="line-item">Phone#</li>
+    <li class="line-item">CheckList</li>
+
+    <li class="line-item">CallTemplates</li>
+  
+    <li class="line-item">Other Checklist stuff</li>
   </ul>
 
   <div v-if="isOpen">

@@ -1,51 +1,64 @@
 <!-- eslint-disable no-unused-vars -->
-<script>
-import { onMounted, ref, watch, watchEffect } from "vue";
+<script setup>
+import { ref, onMounted } from "vue";
 import FirstMenuRow from "./components/FirstMenuRow.vue";
+import SecondMenuRow from "./components/SecondMenuRow.vue";
+import SideBarMenu from "./components/SideBarMenu.vue";
 
-export default {
-  setup() {
-    const fontsize = ref(24);
-    onMounted(() => {});
-    watchEffect(() => {});
-    async function watchClipboard() {
-      if (navigator) {
-        try {
-          const clipBoard = await navigator.clipboard.readText();
-          if (clipBoard !== this.previousClipboardData) {
-            console.log("Clipboard content has changed:", clipBoard);
-            this.previousClipboardData = clipBoard;
-          }
-        } catch (error) {
-          // Handle the error (e.g., log it)
-          console.error("Clipboard read error:", error);
-        }
-      }
-    }
-    async function startClipboardWatcher() {
-      this.previousClipboardData = await navigator.clipboard.readText();
-      setInterval(this.watchClipboard, 1000); // Check every second
-    }
-    function changeFontSize(e) {
-      if (event.ctrlKey && (e.key === "+" || e.key === "-")) {
-        event.preventDefault();
-        const newFontSize =
-          event.key === "+" ? this.fontSize + 1 : this.fontSize - 1;
-        this.fontSize = newFontSize;
-      }
-    }
+const fontsize = ref(24);
+const notesTextarea = ref(null);
+const phoneNumber = ref("Phone#");
+const ticketNumber = ref("Ticket#");
+const assetTag = ref("Asset#");
+const userEmail = ref("User");
+onMounted(() => {
+  // Initialize your component here
+  const why = document.getElementById("notes-area");
+  why.addEventListener("focus", () => {
+    watchClipBoard();
+  });
+});
 
-    return {
-      previousClipboardData: null,
-      text: "Type here...",
-      fontsize,
-    };
-  },
+async function watchClipBoard() {
+  const clipBoard = await navigator.clipboard.readText();
+console.log(clipBoard);
+  // Regular expressions
+  const phoneRegex = /(\+\d{1,2}\s?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/g; // Matches phone numbers
+  const ticketRegex = /Ticket:\s?(\w+)/g; // Matches ticket numbers (assuming a format like "Ticket: ABC123")
+  const emailRegex = /[\w.-]+@[\w.-]+\.\w+/g; // Matches email addresses
 
-  components: {
-    FirstMenuRow,
-  },
-};
+  // Check for matches and update the refs
+  const phoneMatches = clipBoard.match(phoneRegex);
+  if (phoneNumber.value === "Phone#") {
+    if (phoneMatches) {
+      phoneNumber.value = phoneMatches[0];
+    }
+  }
+
+  const ticketMatches = clipBoard.match(ticketRegex);
+  if (ticketMatches && !ticketNumber.value) {
+    ticketNumber.value = ticketMatches[0].replace("Ticket# ", "");
+  }
+
+  if (userEmail.value === "User") {
+    const emailMatches = clipBoard.match(emailRegex);
+    if (emailMatches) {
+      userEmail.value = emailMatches[0];
+    }
+  }
+}
+
+function changeFontSize(event) {
+  if (event.key === "Alt" && (event.key === "+" || event.key === "-")) {
+    console.log("hi");
+    event.preventDefault();
+    const newFontSize =
+      event.key === "+" ? fontsize.value + 1 : fontsize.value - 1;
+    fontsize.value = newFontSize;
+  }
+}
+
+const text = ref("Type here...");
 </script>
 
 <template>
@@ -54,45 +67,36 @@ export default {
       <textarea
         class="notes-area"
         id="notes-area"
+        ref="notesTextarea"
         v-model="text"
         :style="{ fontSize: fontsize + 'px' }"
         @keydown="changeFontSize"
       ></textarea>
       <div class="side-bar">
-        <ul class="side-bar-menu">
-          <li>
-            <img
-              class="side-bar-icon"
-              src="https://cdn-icons-png.flaticon.com/128/1/1176.png"
-              alt=""
-            />
-          </li>
-          <li>
-            <img
-              class="side-bar-icon"
-              src="https://cdn-icons-png.flaticon.com/128/1/1176.png"
-              alt=""
-            />
-          </li>
-          <li>
-            <img
-              class="side-bar-icon"
-              src="https://cdn-icons-png.flaticon.com/128/1/1176.png"
-              alt=""
-            />
-          </li>
-          <li>
-            <img
-              class="side-bar-icon"
-              src="https://cdn-icons-png.flaticon.com/128/1/1176.png"
-              alt=""
-            />
-          </li>
-        </ul>
+        <SideBarMenu />
       </div>
     </div>
     <div class="menu-container">
-      <FirstMenuRow />
+      <ul class="line-row">
+        <li class="line-item">Classified</li>
+        <li class="line-item">
+          <input type="text" v-model="userEmail" />
+        </li>
+
+        <li class="line-item">
+          <input type="text" v-model="assetTag" />
+        </li>
+
+        <li class="line-item">
+          <input type="text" v-model="ticketNumber" />
+        </li>
+        <li class="line-item">
+          <input type="text" v-model="phoneNumber" />
+        </li>
+      </ul>
+
+      <!-- <FirstMenuRow />
+      <SecondMenuRow /> -->
     </div>
   </div>
 </template>
@@ -105,6 +109,21 @@ body {
 }
 #app {
   margin: 0px;
+}
+
+input {
+  padding: 6px;
+  background: transparent;
+  outline: none;
+  border: none;
+  font-weight: 400;
+  background-color: #8b5cf6;
+  cursor: pointer;
+  width: auto; /* Set the width to automatically grow as needed */
+  max-width: 100px;
+}
+input:focus {
+  outline: #ff5733 4px solid;
 }
 .main-container {
   width: 100%;
@@ -121,7 +140,7 @@ body {
   justify-content: space-between;
   background-color: #4caf50;
 
-  height: 80vh;
+  height: 79vh;
 }
 
 .notes-area {
@@ -157,15 +176,25 @@ body {
     list-style: none;
   }
 
-  li {
-    margin-top: 8px;
-    margin-bottom: 8px;
-  }
-
   .side-bar-icon {
     width: 30px;
     height: 30px;
   }
+}
+
+.line-row {
+  display: flex;
+  padding: 3px;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  list-style: none;
+}
+.line-item {
+  margin-left: 1px;
+  margin-right: 1px;
+  background-color: #8b5cf6;
+  cursor: pointer;
+  border: 2px solid #000;
 }
 
 .side-bar:hover {
@@ -189,5 +218,19 @@ body {
 .row-4 {
   display: flex;
   justify-content: space-between;
+}
+
+/* For Webkit-based browsers (Chrome, Safari) */
+::-webkit-scrollbar {
+  width: 8px; /* Adjust the width of the scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: #333; /* Track color */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #e0ded9; /* Thumb color */
+  border-radius: 6px; /* Thumb border radius */
 }
 </style>
